@@ -1,4 +1,4 @@
-package seedu.address.model.person;
+package seedu.address.model.project;
 
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
@@ -22,7 +22,7 @@ public class Address {
     /**
      * Constructs an {@code Address}.
      *
-     * @param address A valid address
+     * @param address A valid address.
      */
     public Address(String address) {
         requireNonNull(address);

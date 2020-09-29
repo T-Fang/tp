@@ -25,19 +25,17 @@ public class Person {
     private Email email;
 
     // Data fields
-    private Address address;
     private final Set<Tag> tags = new HashSet<>();
     private HashMap<Name, Participation> listOfParticipations = new HashMap<>();
 
     /**
      * Every field must be present and not null.
      */
-    public Person(PersonName name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags);
+    public Person(PersonName name, Phone phone, Email email, Set<Tag> tags) {
+        requireAllNonNull(name, phone, email, tags);
         this.name = name;
         this.phone = phone;
         this.email = email;
-        this.address = address;
         this.tags.addAll(tags);
     }
 
@@ -53,16 +51,8 @@ public class Person {
         return email;
     }
 
-    public Address getAddress() {
-        return address;
-    }
-
     public void updateName(String newNameStr) {
         name = new PersonName(newNameStr);
-    }
-
-    public void updateAddress(String newAddressStr) {
-        address = new Address(newAddressStr);
     }
 
     public void updatePhone(String newPhonestr) {
@@ -97,8 +87,7 @@ public class Person {
         return otherTeammate != null
                 && otherTeammate.getName().equals(getName())
                 && (otherTeammate.getPhone().equals(getPhone())
-                || otherTeammate.getEmail().equals(getEmail())
-                || otherTeammate.getAddress().equals(getAddress()));
+                || otherTeammate.getEmail().equals(getEmail()));
     }
 
     /**
@@ -119,14 +108,13 @@ public class Person {
         return otherProject.getName().equals(getName())
                 && otherProject.getPhone().equals(getPhone())
                 && otherProject.getEmail().equals(getEmail())
-                && otherProject.getAddress().equals(getAddress())
                 && otherProject.getTags().equals(getTags());
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags);
+        return Objects.hash(name, phone, email, tags);
     }
 
     @Override
@@ -137,8 +125,6 @@ public class Person {
                 .append(getPhone())
                 .append(" Email: ")
                 .append(getEmail())
-                .append(" Address: ")
-                .append(getAddress())
                 .append(" Tags: ");
         getTags().forEach(builder::append);
         return builder.toString();

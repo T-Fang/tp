@@ -11,6 +11,7 @@ import java.util.Set;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonName;
 import seedu.address.model.tag.Tag;
+import seedu.address.model.task.Task;
 
 /**
  * Represents a Project in the main catalogue.
@@ -24,18 +25,24 @@ public class Project {
     private final Email email;
 
     // Data fields
+    private final Address address;
     private final Set<Tag> tags = new HashSet<>();
-    private HashMap<PersonName, Participation> listOfParticipations = new HashMap<>();
+    private final HashMap<PersonName, Participation> listOfParticipations = new HashMap<>();
+    private final Set<Task> tasks = new HashSet<>();
 
     /**
      * Every field must be present and not null.
      */
-    public Project(Name name, Phone phone, Email email, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, tags);
+    public Project(Name name, Phone phone, Email email, Address address, Set<Tag> tags,
+                   HashMap<PersonName, Participation> listOfParticipations, Set<Task> tasks) {
+        requireAllNonNull(name, phone, email, address, tags, listOfParticipations, tasks);
         this.name = name;
         this.phone = phone;
         this.email = email;
+        this.address = address;
         this.tags.addAll(tags);
+        this.listOfParticipations.putAll(listOfParticipations);
+        this.tasks.addAll(tasks);
     }
 
     public Name getName() {
@@ -50,8 +57,8 @@ public class Project {
         return email;
     }
 
-    public void addProject(Person p) {
-        listOfParticipations.put(p.getName(), new Participation(p, this));
+    public Address getAddress() {
+        return address;
     }
 
     /**
@@ -60,6 +67,18 @@ public class Project {
      */
     public Set<Tag> getTags() {
         return Collections.unmodifiableSet(tags);
+    }
+
+    /**
+     * Returns an immutable task set, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public Set<Task> getTasks() {
+        return Collections.unmodifiableSet(tasks);
+    }
+
+    public void addParticipation(Person p) {
+        listOfParticipations.put(p.getName(), new Participation(p, this));
     }
 
     /**
@@ -94,13 +113,15 @@ public class Project {
         return otherProject.getName().equals(getName())
                 && otherProject.getPhone().equals(getPhone())
                 && otherProject.getEmail().equals(getEmail())
-                && otherProject.getTags().equals(getTags());
+                && otherProject.getAddress().equals(getAddress())
+                && otherProject.getTags().equals(getTags())
+                && otherProject.getTasks().equals(getTasks());
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, tags);
+        return Objects.hash(name, phone, email, address, tags, tasks);
     }
 
     @Override
@@ -111,8 +132,12 @@ public class Project {
                 .append(getPhone())
                 .append(" Email: ")
                 .append(getEmail())
+                .append(" Address: ")
+                .append(getAddress())
                 .append(" Tags: ");
         getTags().forEach(builder::append);
+        builder.append(" Tasks: ");
+        getTasks().forEach(builder::append);
         return builder.toString();
     }
 

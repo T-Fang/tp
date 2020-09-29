@@ -40,6 +40,8 @@ public class ProjectCard extends UiPart<Region> {
     private Label email;
     @FXML
     private FlowPane tags;
+    @FXML
+    private FlowPane tasks;
 
     /**
      * Creates a {@code ProjectCode} with the given {@code Project} and index to display.
@@ -50,10 +52,14 @@ public class ProjectCard extends UiPart<Region> {
         id.setText(displayedIndex + ". ");
         name.setText(project.getName().fullName);
         phone.setText(project.getPhone().value);
+        address.setText(project.getAddress().value);
         email.setText(project.getEmail().value);
         project.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+        project.getTasks().stream()
+                .sorted(Comparator.comparing(task -> task.taskName))
+                .forEach(task -> tasks.getChildren().add(new Label(task.taskName)));
     }
 
     @Override
