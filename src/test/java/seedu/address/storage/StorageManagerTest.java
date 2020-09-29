@@ -2,7 +2,7 @@ package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static seedu.address.testutil.TypicalProjects.getTypicalMainCatalogue;
+import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.nio.file.Path;
 
@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import seedu.address.commons.core.GuiSettings;
-import seedu.address.model.MainCatalogue;
-import seedu.address.model.ReadOnlyMainCatalogue;
+import seedu.address.model.AddressBook;
+import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.UserPrefs;
 
 public class StorageManagerTest {
@@ -24,9 +24,9 @@ public class StorageManagerTest {
 
     @BeforeEach
     public void setUp() {
-        JsonMainCatalogueStorage mainCatalogueStorage = new JsonMainCatalogueStorage(getTempFilePath("ab"));
+        JsonAddressBookStorage addressBookStorage = new JsonAddressBookStorage(getTempFilePath("ab"));
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(getTempFilePath("prefs"));
-        storageManager = new StorageManager(mainCatalogueStorage, userPrefsStorage);
+        storageManager = new StorageManager(addressBookStorage, userPrefsStorage);
     }
 
     private Path getTempFilePath(String fileName) {
@@ -48,21 +48,21 @@ public class StorageManagerTest {
     }
 
     @Test
-    public void mainCatalogueReadSave() throws Exception {
+    public void addressBookReadSave() throws Exception {
         /*
          * Note: This is an integration test that verifies the StorageManager is properly wired to the
-         * {@link JsonMainCatalogueStorage} class.
-         * More extensive testing of UserPref saving/reading is done in {@link JsonMainCatalogueStorageTest} class.
+         * {@link JsonAddressBookStorage} class.
+         * More extensive testing of UserPref saving/reading is done in {@link JsonAddressBookStorageTest} class.
          */
-        MainCatalogue original = getTypicalMainCatalogue();
-        storageManager.saveMainCatalogue(original);
-        ReadOnlyMainCatalogue retrieved = storageManager.readMainCatalogue().get();
-        assertEquals(original, new MainCatalogue(retrieved));
+        AddressBook original = getTypicalAddressBook();
+        storageManager.saveAddressBook(original);
+        ReadOnlyAddressBook retrieved = storageManager.readAddressBook().get();
+        assertEquals(original, new AddressBook(retrieved));
     }
 
     @Test
-    public void getMainCatalogueFilePath() {
-        assertNotNull(storageManager.getMainCatalogueFilePath());
+    public void getAddressBookFilePath() {
+        assertNotNull(storageManager.getAddressBookFilePath());
     }
 
 }

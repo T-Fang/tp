@@ -14,7 +14,7 @@ import seedu.address.commons.core.GuiSettings;
 public class UserPrefs implements ReadOnlyUserPrefs {
 
     private GuiSettings guiSettings = new GuiSettings();
-    private Path mainCatalogueFilePath = Paths.get("data" , "maincatalogue.json");
+    private Path addressBookFilePath = Paths.get("data" , "addressbook.json");
 
     /**
      * Creates a {@code UserPrefs} with default values.
@@ -35,7 +35,7 @@ public class UserPrefs implements ReadOnlyUserPrefs {
     public void resetData(ReadOnlyUserPrefs newUserPrefs) {
         requireNonNull(newUserPrefs);
         setGuiSettings(newUserPrefs.getGuiSettings());
-        setMainCatalogueFilePath(newUserPrefs.getMainCatalogueFilePath());
+        setAddressBookFilePath(newUserPrefs.getAddressBookFilePath());
     }
 
     public GuiSettings getGuiSettings() {
@@ -47,13 +47,13 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         this.guiSettings = guiSettings;
     }
 
-    public Path getMainCatalogueFilePath() {
-        return mainCatalogueFilePath;
+    public Path getAddressBookFilePath() {
+        return addressBookFilePath;
     }
 
-    public void setMainCatalogueFilePath(Path mainCatalogueFilePath) {
-        requireNonNull(mainCatalogueFilePath);
-        this.mainCatalogueFilePath = mainCatalogueFilePath;
+    public void setAddressBookFilePath(Path addressBookFilePath) {
+        requireNonNull(addressBookFilePath);
+        this.addressBookFilePath = addressBookFilePath;
     }
 
     @Override
@@ -68,19 +68,19 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         UserPrefs o = (UserPrefs) other;
 
         return guiSettings.equals(o.guiSettings)
-                && mainCatalogueFilePath.equals(o.mainCatalogueFilePath);
+                && addressBookFilePath.equals(o.addressBookFilePath);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guiSettings, mainCatalogueFilePath);
+        return Objects.hash(guiSettings, addressBookFilePath);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("Gui Settings : " + guiSettings);
-        sb.append("\nLocal data file location : " + mainCatalogueFilePath);
+        sb.append("\nLocal data file location : " + addressBookFilePath);
         return sb.toString();
     }
 

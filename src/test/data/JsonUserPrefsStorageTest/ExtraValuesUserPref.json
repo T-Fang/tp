@@ -9,5 +9,5 @@
       "z" : 99
     }
   },
-  "mainCatalogueFilePath" : "maincatalogue.json"
+  "addressBookFilePath" : "addressbook.json"
 }

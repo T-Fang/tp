@@ -11,34 +11,34 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
-import seedu.address.model.project.Project;
+import seedu.address.model.person.Person;
 
 /**
- * Represents the in-memory model of the main catalogue data.
+ * Represents the in-memory model of the address book data.
  */
 public class ModelManager implements Model {
     private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
 
-    private final MainCatalogue mainCatalogue;
+    private final AddressBook addressBook;
     private final UserPrefs userPrefs;
-    private final FilteredList<Project> filteredProjects;
+    private final FilteredList<Person> filteredPersons;
 
     /**
-     * Initializes a ModelManager with the given mainCatalogue and userPrefs.
+     * Initializes a ModelManager with the given addressBook and userPrefs.
      */
-    public ModelManager(ReadOnlyMainCatalogue mainCatalogue, ReadOnlyUserPrefs userPrefs) {
+    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyUserPrefs userPrefs) {
         super();
-        requireAllNonNull(mainCatalogue, userPrefs);
+        requireAllNonNull(addressBook, userPrefs);
 
-        logger.fine("Initializing with main catalogue: " + mainCatalogue + " and user prefs " + userPrefs);
+        logger.fine("Initializing with address book: " + addressBook + " and user prefs " + userPrefs);
 
-        this.mainCatalogue = new MainCatalogue(mainCatalogue);
+        this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
-        filteredProjects = new FilteredList<>(this.mainCatalogue.getProjectList());
+        filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
     }
 
     public ModelManager() {
-        this(new MainCatalogue(), new UserPrefs());
+        this(new AddressBook(), new UserPrefs());
     }
 
     //=========== UserPrefs ==================================================================================
@@ -66,67 +66,67 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public Path getProjectCatalogueFilePath() {
-        return userPrefs.getMainCatalogueFilePath();
+    public Path getAddressBookFilePath() {
+        return userPrefs.getAddressBookFilePath();
     }
 
     @Override
-    public void setProjectCatalogueFilePath(Path mainCatalogueFilePath) {
-        requireNonNull(mainCatalogueFilePath);
-        userPrefs.setMainCatalogueFilePath(mainCatalogueFilePath);
+    public void setAddressBookFilePath(Path addressBookFilePath) {
+        requireNonNull(addressBookFilePath);
+        userPrefs.setAddressBookFilePath(addressBookFilePath);
     }
 
-    //=========== MainCatalogue ================================================================================
+    //=========== AddressBook ================================================================================
 
     @Override
-    public void setProjectCatalogue(ReadOnlyMainCatalogue mainCatalogue) {
-        this.mainCatalogue.resetData(mainCatalogue);
-    }
-
-    @Override
-    public ReadOnlyMainCatalogue getProjectCatalogue() {
-        return mainCatalogue;
+    public void setAddressBook(ReadOnlyAddressBook addressBook) {
+        this.addressBook.resetData(addressBook);
     }
 
     @Override
-    public boolean hasProject(Project project) {
-        requireNonNull(project);
-        return mainCatalogue.hasProject(project);
+    public ReadOnlyAddressBook getAddressBook() {
+        return addressBook;
     }
 
     @Override
-    public void deleteProject(Project target) {
-        mainCatalogue.removeProject(target);
+    public boolean hasPerson(Person person) {
+        requireNonNull(person);
+        return addressBook.hasPerson(person);
     }
 
     @Override
-    public void addProject(Project project) {
-        mainCatalogue.addProject(project);
-        updateFilteredProjectList(PREDICATE_SHOW_ALL_PROJECTS);
+    public void deletePerson(Person target) {
+        addressBook.removePerson(target);
     }
 
     @Override
-    public void setProject(Project target, Project editedProject) {
-        requireAllNonNull(target, editedProject);
-
-        mainCatalogue.setProject(target, editedProject);
+    public void addPerson(Person person) {
+        addressBook.addPerson(person);
+        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
-    //=========== Filtered Project List Accessors =============================================================
+    @Override
+    public void setPerson(Person target, Person editedPerson) {
+        requireAllNonNull(target, editedPerson);
+
+        addressBook.setPerson(target, editedPerson);
+    }
+
+    //=========== Filtered Person List Accessors =============================================================
 
     /**
-     * Returns an unmodifiable view of the list of {@code Project} backed by the internal list of
-     * {@code versionedMainCatalogue}
+     * Returns an unmodifiable view of the list of {@code Person} backed by the internal list of
+     * {@code versionedAddressBook}
      */
     @Override
-    public ObservableList<Project> getFilteredProjectList() {
-        return filteredProjects;
+    public ObservableList<Person> getFilteredPersonList() {
+        return filteredPersons;
     }
 
     @Override
-    public void updateFilteredProjectList(Predicate<Project> predicate) {
+    public void updateFilteredPersonList(Predicate<Person> predicate) {
         requireNonNull(predicate);
-        filteredProjects.setPredicate(predicate);
+        filteredPersons.setPredicate(predicate);
     }
 
     @Override
@@ -143,8 +143,9 @@ public class ModelManager implements Model {
 
         // state check
         ModelManager other = (ModelManager) obj;
-        return mainCatalogue.equals(other.mainCatalogue)
+        return addressBook.equals(other.addressBook)
                 && userPrefs.equals(other.userPrefs)
-                && filteredProjects.equals(other.filteredProjects);
+                && filteredPersons.equals(other.filteredPersons);
     }
+
 }

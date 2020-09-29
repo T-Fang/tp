@@ -7,5 +7,5 @@
       "y" : 100
     }
   },
-  "mainCatalogueFilePath" : "maincatalogue.json"
+  "addressBookFilePath" : "addressbook.json"
 }

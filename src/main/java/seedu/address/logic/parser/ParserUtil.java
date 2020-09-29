@@ -9,12 +9,11 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.project.Address;
-import seedu.address.model.project.Email;
-import seedu.address.model.project.Name;
-import seedu.address.model.project.Phone;
+import seedu.address.model.person.Address;
+import seedu.address.model.person.Email;
+import seedu.address.model.person.Name;
+import seedu.address.model.person.Phone;
 import seedu.address.model.tag.Tag;
-import seedu.address.model.task.Task;
 
 /**
  * Contains utility methods used for parsing strings in the various *Parser classes.
@@ -121,28 +120,5 @@ public class ParserUtil {
             tagSet.add(parseTag(tagName));
         }
         return tagSet;
-    }
-
-    /**
-     * Parses a {@code String task} into a {@code Task}.
-     * Leading and trailing whitespaces will be trimmed.
-     */
-    public static Task parseTask(String task) {
-        requireNonNull(task);
-        String trimmedTask = task.trim();
-        return new Task(trimmedTask, null, null, 0, false);
-    }
-
-
-    /**
-     * Parses {@code Collection<String> tasks} into a {@code Set<Task>}.
-     */
-    public static Set<Task> parseTasks(Collection<String> tasks) {
-        requireNonNull(tasks);
-        final Set<Task> taskSet = new HashSet<>();
-        for (String taskName : tasks) {
-            taskSet.add(parseTask(taskName));
-        }
-        return taskSet; //TODO: parse tasks in a more meaningful way
     }
 }

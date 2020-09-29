@@ -3,10 +3,10 @@ package seedu.address.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PROJECTS;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalProjects.ALICE;
-import static seedu.address.testutil.TypicalProjects.BENSON;
+import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.BENSON;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,8 +15,8 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
-import seedu.address.model.project.NameContainsKeywordsPredicate;
-import seedu.address.testutil.MainCatalogueBuilder;
+import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.testutil.AddressBookBuilder;
 
 public class ModelManagerTest {
 
@@ -26,7 +26,7 @@ public class ModelManagerTest {
     public void constructor() {
         assertEquals(new UserPrefs(), modelManager.getUserPrefs());
         assertEquals(new GuiSettings(), modelManager.getGuiSettings());
-        assertEquals(new MainCatalogue(), new MainCatalogue(modelManager.getProjectCatalogue()));
+        assertEquals(new AddressBook(), new AddressBook(modelManager.getAddressBook()));
     }
 
     @Test
@@ -37,14 +37,14 @@ public class ModelManagerTest {
     @Test
     public void setUserPrefs_validUserPrefs_copiesUserPrefs() {
         UserPrefs userPrefs = new UserPrefs();
-        userPrefs.setMainCatalogueFilePath(Paths.get("address/book/file/path"));
+        userPrefs.setAddressBookFilePath(Paths.get("address/book/file/path"));
         userPrefs.setGuiSettings(new GuiSettings(1, 2, 3, 4));
         modelManager.setUserPrefs(userPrefs);
         assertEquals(userPrefs, modelManager.getUserPrefs());
 
         // Modifying userPrefs should not modify modelManager's userPrefs
         UserPrefs oldUserPrefs = new UserPrefs(userPrefs);
-        userPrefs.setMainCatalogueFilePath(Paths.get("new/address/book/file/path"));
+        userPrefs.setAddressBookFilePath(Paths.get("new/address/book/file/path"));
         assertEquals(oldUserPrefs, modelManager.getUserPrefs());
     }
 
@@ -61,47 +61,47 @@ public class ModelManagerTest {
     }
 
     @Test
-    public void setMainCatalogueFilePath_nullPath_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> modelManager.setProjectCatalogueFilePath(null));
+    public void setAddressBookFilePath_nullPath_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.setAddressBookFilePath(null));
     }
 
     @Test
-    public void setMainCatalogueFilePath_validPath_setsMainCatalogueFilePath() {
+    public void setAddressBookFilePath_validPath_setsAddressBookFilePath() {
         Path path = Paths.get("address/book/file/path");
-        modelManager.setProjectCatalogueFilePath(path);
-        assertEquals(path, modelManager.getProjectCatalogueFilePath());
+        modelManager.setAddressBookFilePath(path);
+        assertEquals(path, modelManager.getAddressBookFilePath());
     }
 
     @Test
-    public void hasProject_nullProject_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> modelManager.hasProject(null));
+    public void hasPerson_nullPerson_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.hasPerson(null));
     }
 
     @Test
-    public void hasProject_projectNotInMainCatalogue_returnsFalse() {
-        assertFalse(modelManager.hasProject(ALICE));
+    public void hasPerson_personNotInAddressBook_returnsFalse() {
+        assertFalse(modelManager.hasPerson(ALICE));
     }
 
     @Test
-    public void hasProject_projectInMainCatalogue_returnsTrue() {
-        modelManager.addProject(ALICE);
-        assertTrue(modelManager.hasProject(ALICE));
+    public void hasPerson_personInAddressBook_returnsTrue() {
+        modelManager.addPerson(ALICE);
+        assertTrue(modelManager.hasPerson(ALICE));
     }
 
     @Test
-    public void getFilteredProjectList_modifyList_throwsUnsupportedOperationException() {
-        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredProjectList().remove(0));
+    public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
     }
 
     @Test
     public void equals() {
-        MainCatalogue mainCatalogue = new MainCatalogueBuilder().withProject(ALICE).withProject(BENSON).build();
-        MainCatalogue differentMainCatalogue = new MainCatalogue();
+        AddressBook addressBook = new AddressBookBuilder().withPerson(ALICE).withPerson(BENSON).build();
+        AddressBook differentAddressBook = new AddressBook();
         UserPrefs userPrefs = new UserPrefs();
 
         // same values -> returns true
-        modelManager = new ModelManager(mainCatalogue, userPrefs);
-        ModelManager modelManagerCopy = new ModelManager(mainCatalogue, userPrefs);
+        modelManager = new ModelManager(addressBook, userPrefs);
+        ModelManager modelManagerCopy = new ModelManager(addressBook, userPrefs);
         assertTrue(modelManager.equals(modelManagerCopy));
 
         // same object -> returns true
@@ -113,20 +113,20 @@ public class ModelManagerTest {
         // different types -> returns false
         assertFalse(modelManager.equals(5));
 
-        // different mainCatalogue -> returns false
-        assertFalse(modelManager.equals(new ModelManager(differentMainCatalogue, userPrefs)));
+        // different addressBook -> returns false
+        assertFalse(modelManager.equals(new ModelManager(differentAddressBook, userPrefs)));
 
         // different filteredList -> returns false
         String[] keywords = ALICE.getName().fullName.split("\\s+");
-        modelManager.updateFilteredProjectList(new NameContainsKeywordsPredicate(Arrays.asList(keywords)));
-        assertFalse(modelManager.equals(new ModelManager(mainCatalogue, userPrefs)));
+        modelManager.updateFilteredPersonList(new NameContainsKeywordsPredicate(Arrays.asList(keywords)));
+        assertFalse(modelManager.equals(new ModelManager(addressBook, userPrefs)));
 
         // resets modelManager to initial state for upcoming tests
-        modelManager.updateFilteredProjectList(PREDICATE_SHOW_ALL_PROJECTS);
+        modelManager.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
 
         // different userPrefs -> returns false
         UserPrefs differentUserPrefs = new UserPrefs();
-        differentUserPrefs.setMainCatalogueFilePath(Paths.get("differentFilePath"));
-        assertFalse(modelManager.equals(new ModelManager(mainCatalogue, differentUserPrefs)));
+        differentUserPrefs.setAddressBookFilePath(Paths.get("differentFilePath"));
+        assertFalse(modelManager.equals(new ModelManager(addressBook, differentUserPrefs)));
     }
 }

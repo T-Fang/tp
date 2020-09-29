@@ -16,44 +16,44 @@ import org.junit.jupiter.api.Test;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.exceptions.CommandException;
-import seedu.address.model.MainCatalogue;
+import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
-import seedu.address.model.ReadOnlyMainCatalogue;
+import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
-import seedu.address.model.project.Project;
-import seedu.address.testutil.ProjectBuilder;
+import seedu.address.model.person.Person;
+import seedu.address.testutil.PersonBuilder;
 
 public class AddCommandTest {
 
     @Test
-    public void constructor_nullProject_throwsNullPointerException() {
+    public void constructor_nullPerson_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new AddCommand(null));
     }
 
     @Test
-    public void execute_projectAcceptedByModel_addSuccessful() throws Exception {
-        ModelStubAcceptingProjectAdded modelStub = new ModelStubAcceptingProjectAdded();
-        Project validProject = new ProjectBuilder().build();
+    public void execute_personAcceptedByModel_addSuccessful() throws Exception {
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+        Person validPerson = new PersonBuilder().build();
 
-        CommandResult commandResult = new AddCommand(validProject).execute(modelStub);
+        CommandResult commandResult = new AddCommand(validPerson).execute(modelStub);
 
-        assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, validProject), commandResult.getFeedbackToUser());
-        assertEquals(Arrays.asList(validProject), modelStub.projectsAdded);
+        assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, validPerson), commandResult.getFeedbackToUser());
+        assertEquals(Arrays.asList(validPerson), modelStub.personsAdded);
     }
 
     @Test
-    public void execute_duplicateProject_throwsCommandException() {
-        Project validProject = new ProjectBuilder().build();
-        AddCommand addCommand = new AddCommand(validProject);
-        ModelStub modelStub = new ModelStubWithProject(validProject);
+    public void execute_duplicatePerson_throwsCommandException() {
+        Person validPerson = new PersonBuilder().build();
+        AddCommand addCommand = new AddCommand(validPerson);
+        ModelStub modelStub = new ModelStubWithPerson(validPerson);
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PROJECT, () -> addCommand.execute(modelStub));
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
     }
 
     @Test
     public void equals() {
-        Project alice = new ProjectBuilder().withName("Alice").build();
-        Project bob = new ProjectBuilder().withName("Bob").build();
+        Person alice = new PersonBuilder().withName("Alice").build();
+        Person bob = new PersonBuilder().withName("Bob").build();
         AddCommand addAliceCommand = new AddCommand(alice);
         AddCommand addBobCommand = new AddCommand(bob);
 
@@ -70,7 +70,7 @@ public class AddCommandTest {
         // null -> returns false
         assertFalse(addAliceCommand.equals(null));
 
-        // different project -> returns false
+        // different person -> returns false
         assertFalse(addAliceCommand.equals(addBobCommand));
     }
 
@@ -99,95 +99,95 @@ public class AddCommandTest {
         }
 
         @Override
-        public Path getProjectCatalogueFilePath() {
+        public Path getAddressBookFilePath() {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void setProjectCatalogueFilePath(Path mainCatalogueFilePath) {
+        public void setAddressBookFilePath(Path addressBookFilePath) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void addProject(Project project) {
+        public void addPerson(Person person) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void setProjectCatalogue(ReadOnlyMainCatalogue newData) {
+        public void setAddressBook(ReadOnlyAddressBook newData) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public ReadOnlyMainCatalogue getProjectCatalogue() {
+        public ReadOnlyAddressBook getAddressBook() {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public boolean hasProject(Project project) {
+        public boolean hasPerson(Person person) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void deleteProject(Project target) {
+        public void deletePerson(Person target) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void setProject(Project target, Project editedProject) {
+        public void setPerson(Person target, Person editedPerson) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public ObservableList<Project> getFilteredProjectList() {
+        public ObservableList<Person> getFilteredPersonList() {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void updateFilteredProjectList(Predicate<Project> predicate) {
+        public void updateFilteredPersonList(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
         }
     }
 
     /**
-     * A Model stub that contains a single project.
+     * A Model stub that contains a single person.
      */
-    private class ModelStubWithProject extends ModelStub {
-        private final Project project;
+    private class ModelStubWithPerson extends ModelStub {
+        private final Person person;
 
-        ModelStubWithProject(Project project) {
-            requireNonNull(project);
-            this.project = project;
+        ModelStubWithPerson(Person person) {
+            requireNonNull(person);
+            this.person = person;
         }
 
         @Override
-        public boolean hasProject(Project project) {
-            requireNonNull(project);
-            return this.project.isSameProject(project);
+        public boolean hasPerson(Person person) {
+            requireNonNull(person);
+            return this.person.isSamePerson(person);
         }
     }
 
     /**
-     * A Model stub that always accept the project being added.
+     * A Model stub that always accept the person being added.
      */
-    private class ModelStubAcceptingProjectAdded extends ModelStub {
-        final ArrayList<Project> projectsAdded = new ArrayList<>();
+    private class ModelStubAcceptingPersonAdded extends ModelStub {
+        final ArrayList<Person> personsAdded = new ArrayList<>();
 
         @Override
-        public boolean hasProject(Project project) {
-            requireNonNull(project);
-            return projectsAdded.stream().anyMatch(project::isSameProject);
+        public boolean hasPerson(Person person) {
+            requireNonNull(person);
+            return personsAdded.stream().anyMatch(person::isSamePerson);
         }
 
         @Override
-        public void addProject(Project project) {
-            requireNonNull(project);
-            projectsAdded.add(project);
+        public void addPerson(Person person) {
+            requireNonNull(person);
+            personsAdded.add(person);
         }
 
         @Override
-        public ReadOnlyMainCatalogue getProjectCatalogue() {
-            return new MainCatalogue();
+        public ReadOnlyAddressBook getAddressBook() {
+            return new AddressBook();
         }
     }
 
