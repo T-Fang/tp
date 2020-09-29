@@ -3,42 +3,47 @@ package seedu.address.model.person;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import seedu.address.model.project.Name;
+import seedu.address.model.project.Participation;
+import seedu.address.model.project.Project;
 import seedu.address.model.tag.Tag;
 
 /**
- * Represents a Person in the address book.
+ * Represents a Teammate in the team.
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
 public class Person {
 
     // Identity fields
-    private final Name name;
-    private final Phone phone;
-    private final Email email;
+    private PersonName name;
+    private Phone phone;
+    private Email email;
 
     // Data fields
-    private final Address address;
+    private Address address;
     private final Remark remark;
     private final Set<Tag> tags = new HashSet<>();
+    private HashMap<Name, Participation> listOfParticipations = new HashMap<>();
 
     /**
      * Every field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Remark remark, Set<Tag> tags) {
+    public Person(PersonName name, Phone phone, Email email, Address address, Remark remark, Set<Tag> tags) {
         requireAllNonNull(name, phone, email, address, tags);
         this.name = name;
         this.phone = phone;
         this.email = email;
-        this.address = address;
         this.remark = remark;
+        this.address = address;
         this.tags.addAll(tags);
     }
 
-    public Name getName() {
+    public PersonName getName() {
         return name;
     }
 
@@ -58,6 +63,26 @@ public class Person {
         return remark;
     }
 
+    public void updateName(String newNameStr) {
+        name = new PersonName(newNameStr);
+    }
+
+    public void updateAddress(String newAddressStr) {
+        address = new Address(newAddressStr);
+    }
+
+    public void updatePhone(String newPhonestr) {
+        phone = new Phone(newPhonestr);
+    }
+
+    public void updateEmail(String newEmailStr) {
+        email = new Email(newEmailStr);
+    }
+
+    public void addProject(Project p) {
+        listOfParticipations.put(p.getName(), new Participation(this, p));
+    }
+
     /**
      * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
@@ -67,22 +92,24 @@ public class Person {
     }
 
     /**
-     * Returns true if both persons of the same name have at least one other identity field that is the same.
-     * This defines a weaker notion of equality between two persons.
+     * Returns true if both teammates of the same name have at least one other identity field that is the same.
+     * This defines a weaker notion of equality between two projects.
      */
-    public boolean isSamePerson(Person otherPerson) {
-        if (otherPerson == this) {
+    public boolean isSameTeammate(Person otherTeammate) {
+        if (otherTeammate == this) {
             return true;
         }
 
-        return otherPerson != null
-                && otherPerson.getName().equals(getName())
-                && (otherPerson.getPhone().equals(getPhone()) || otherPerson.getEmail().equals(getEmail()));
+        return otherTeammate != null
+                && otherTeammate.getName().equals(getName())
+                && (otherTeammate.getPhone().equals(getPhone())
+                || otherTeammate.getEmail().equals(getEmail())
+                || otherTeammate.getAddress().equals(getAddress()));
     }
 
     /**
-     * Returns true if both persons have the same identity and data fields.
-     * This defines a stronger notion of equality between two persons.
+     * Returns true if both projects have the same identity and data fields.
+     * This defines a stronger notion of equality between two projects.
      */
     @Override
     public boolean equals(Object other) {
@@ -94,12 +121,12 @@ public class Person {
             return false;
         }
 
-        Person otherPerson = (Person) other;
-        return otherPerson.getName().equals(getName())
-                && otherPerson.getPhone().equals(getPhone())
-                && otherPerson.getEmail().equals(getEmail())
-                && otherPerson.getAddress().equals(getAddress())
-                && otherPerson.getTags().equals(getTags());
+        Person otherProject = (Person) other;
+        return otherProject.getName().equals(getName())
+                && otherProject.getPhone().equals(getPhone())
+                && otherProject.getEmail().equals(getEmail())
+                && otherProject.getAddress().equals(getAddress())
+                && otherProject.getTags().equals(getTags());
     }
 
     @Override
