@@ -14,28 +14,22 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.project.Address;
 import seedu.address.model.project.Email;
 import seedu.address.model.project.Name;
 import seedu.address.model.project.Phone;
 import seedu.address.model.tag.Tag;
-import seedu.address.model.task.Task;
 
 public class ParserUtilTest {
     private static final String INVALID_NAME = "R@chel";
     private static final String INVALID_PHONE = "+651234";
-    private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_EMAIL = "example.com";
     private static final String INVALID_TAG = "#friend";
 
     private static final String VALID_NAME = "Rachel Walker";
     private static final String VALID_PHONE = "123456";
-    private static final String VALID_ADDRESS = "123 Main Street #0505";
     private static final String VALID_EMAIL = "rachel@example.com";
     private static final String VALID_TAG_1 = "friend";
     private static final String VALID_TAG_2 = "neighbour";
-    private static final String VALID_TASK_1 = "Write DG";
-    private static final String VALID_TASK_2 = "Brainstorm user stories";
 
     private static final String WHITESPACE = " \t\r\n";
 
@@ -106,29 +100,6 @@ public class ParserUtilTest {
     }
 
     @Test
-    public void parseAddress_null_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> ParserUtil.parseAddress((String) null));
-    }
-
-    @Test
-    public void parseAddress_invalidValue_throwsParseException() {
-        assertThrows(ParseException.class, () -> ParserUtil.parseAddress(INVALID_ADDRESS));
-    }
-
-    @Test
-    public void parseAddress_validValueWithoutWhitespace_returnsAddress() throws Exception {
-        Address expectedAddress = new Address(VALID_ADDRESS);
-        assertEquals(expectedAddress, ParserUtil.parseAddress(VALID_ADDRESS));
-    }
-
-    @Test
-    public void parseAddress_validValueWithWhitespace_returnsTrimmedAddress() throws Exception {
-        String addressWithWhitespace = WHITESPACE + VALID_ADDRESS + WHITESPACE;
-        Address expectedAddress = new Address(VALID_ADDRESS);
-        assertEquals(expectedAddress, ParserUtil.parseAddress(addressWithWhitespace));
-    }
-
-    @Test
     public void parseEmail_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parseEmail((String) null));
     }
@@ -196,44 +167,4 @@ public class ParserUtilTest {
 
         assertEquals(expectedTagSet, actualTagSet);
     }
-
-    // TODO: task invalid tests
-    @Test
-    public void parseTask_null_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> ParserUtil.parseTask(null));
-    }
-
-    @Test
-    public void parseTask_validValueWithoutWhitespace_returnsTask() {
-        Task expectedTask = new Task(VALID_TASK_1, null, null, 0, false);
-        assertEquals(expectedTask, ParserUtil.parseTask(VALID_TASK_1));
-    }
-
-    @Test
-    public void parseTask_validValueWithWhitespace_returnsTrimmedTask() {
-        String taskWithWhitespace = WHITESPACE + VALID_TASK_1 + WHITESPACE;
-        Task expectedTask = new Task(VALID_TASK_1, null, null, 0, false);
-        assertEquals(expectedTask, ParserUtil.parseTask(taskWithWhitespace));
-    }
-
-    @Test
-    public void parseTasks_null_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> ParserUtil.parseTasks(null));
-    }
-
-    @Test
-    public void parseTasks_emptyCollection_returnsEmptySet() {
-        assertTrue(ParserUtil.parseTasks(Collections.emptyList()).isEmpty());
-    }
-
-    @Test
-    public void parseTasks_collectionWithValidTasks_returnsTaskSet() {
-        Set<Task> actualTaskSet = ParserUtil.parseTasks(Arrays.asList(VALID_TASK_1, VALID_TASK_2));
-        Set<Task> expectedTaskSet = new HashSet<Task>(Arrays.asList(
-                new Task(VALID_TASK_1, null, null, 0, false),
-                new Task(VALID_TASK_2, null, null, 0, false)));
-
-        assertEquals(expectedTaskSet, actualTaskSet);
-    }
-
 }

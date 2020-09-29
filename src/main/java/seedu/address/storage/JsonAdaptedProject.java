@@ -1,7 +1,6 @@
 package seedu.address.storage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,13 +10,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
-import seedu.address.model.project.Address;
 import seedu.address.model.project.Email;
 import seedu.address.model.project.Name;
 import seedu.address.model.project.Phone;
 import seedu.address.model.project.Project;
 import seedu.address.model.tag.Tag;
-import seedu.address.model.task.Task;
 
 /**
  * Jackson-friendly version of {@link Project}.
@@ -29,27 +26,20 @@ class JsonAdaptedProject {
     private final String name;
     private final String phone;
     private final String email;
-    private final String address;
     private final List<JsonAdaptedTag> tagged = new ArrayList<>();
-    private final List<JsonAdaptedTask> occupied = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedProject} with the given project details.
      */
     @JsonCreator
     public JsonAdaptedProject(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-                              @JsonProperty("email") String email, @JsonProperty("address") String address,
-                              @JsonProperty("tagged") List<JsonAdaptedTag> tagged,
-                              @JsonProperty("occupied") List<JsonAdaptedTask> occupied) {
+                              @JsonProperty("email") String email,
+                              @JsonProperty("tagged") List<JsonAdaptedTag> tagged) {
         this.name = name;
         this.phone = phone;
         this.email = email;
-        this.address = address;
         if (tagged != null) {
             this.tagged.addAll(tagged);
-        }
-        if (occupied != null) {
-            this.occupied.addAll(occupied);
         }
     }
 
@@ -60,12 +50,8 @@ class JsonAdaptedProject {
         name = source.getName().fullName;
         phone = source.getPhone().value;
         email = source.getEmail().value;
-        address = source.getAddress().value;
         tagged.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
-                .collect(Collectors.toList()));
-        occupied.addAll(source.getTasks().stream()
-                .map(JsonAdaptedTask::new)
                 .collect(Collectors.toList()));
     }
 
@@ -78,10 +64,6 @@ class JsonAdaptedProject {
         final List<Tag> projectTags = new ArrayList<>();
         for (JsonAdaptedTag tag : tagged) {
             projectTags.add(tag.toModelType());
-        }
-        final List<Task> projectTasks = new ArrayList<>();
-        for (JsonAdaptedTask task : occupied) {
-            projectTasks.add(task.toModelType());
         }
 
         if (name == null) {
@@ -108,18 +90,8 @@ class JsonAdaptedProject {
         }
         final Email modelEmail = new Email(email);
 
-        if (address == null) {
-            throw new IllegalValueException(String.format(MISSING_FIELD_MESSAGE_FORMAT, Address.class.getSimpleName()));
-        }
-        if (!Address.isValidAddress(address)) {
-            throw new IllegalValueException(Address.MESSAGE_CONSTRAINTS);
-        }
-        final Address modelAddress = new Address(address);
-
         final Set<Tag> modelTags = new HashSet<>(projectTags);
-        final Set<Task> modelTasks = new HashSet<>(projectTasks);
-        return new Project(modelName, modelPhone, modelEmail, modelAddress,
-                modelTags, new HashMap<>(), modelTasks);
+        return new Project(modelName, modelPhone, modelEmail, modelTags);
     }
 
 }
